@@ -5,7 +5,7 @@ interface IReqSignup {
 export const requestSignup = async ({
   email,
   password,
-}: IReqSignup): Promise<Response> => {
+}: IReqSignup): Promise<void> => {
   const request = await fetch(
     "https://www.pre-onboarding-selection-task.shop/auth/signup",
     {
@@ -19,9 +19,7 @@ export const requestSignup = async ({
       }),
     },
   );
-  if (request.ok) {
-    return request;
-  } else {
+  if (!request.ok) {
     throw new Error();
   }
 };
