@@ -1,23 +1,37 @@
 import { createBrowserRouter } from "react-router-dom";
+import Home from "./Home";
 import Signup from "./Signup";
 import Signin from "./Signin";
 import Todo from "./Todo";
+import Auth from "./Auth";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <></>,
+    element: <Home />,
   },
   {
     path: "/signup",
-    element: <Signup />,
+    element: (
+      <Auth>
+        <Signup />
+      </Auth>
+    ),
   },
   {
     path: "/signin",
-    element: <Signin />,
+    element: (
+      <Auth>
+        <Signin />
+      </Auth>
+    ),
   },
   {
     path: "/todo",
-    element: <Todo />,
+    element: (
+      <Auth>
+        <Todo />
+      </Auth>
+    ),
   },
 ]);
