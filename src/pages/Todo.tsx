@@ -6,6 +6,7 @@ import {
   requestToGetTodo,
   requestToUpdateTodo,
 } from "../api/todo";
+import module from "../styles/Todo.module.css";
 
 interface IRenderTodo extends IResTodo {
   /** 수정모드 on/off */
@@ -134,7 +135,7 @@ const Todo = () => {
   return (
     <>
       <h1>todo list 페이지</h1>
-      <div style={{ display: "flex", gap: "10px" }}>
+      <div className={module["new-input-module"]}>
         <label htmlFor="new-todo-input">new todo :</label>
         <input
           id="new-todo-input"
@@ -152,7 +153,7 @@ const Todo = () => {
               <li
                 data-testid="todo-li"
                 key={todoItem.id}
-                style={{ display: "flex", gap: "5px", alignItems: "center" }}
+                className={module["cur-todo-list-module"]}
               >
                 <input
                   id={todoItem.id.toString()}

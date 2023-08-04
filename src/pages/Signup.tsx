@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestSignup } from "../api/auth";
 import { isValidEmail, isValidPwd } from "../utils/auth";
+import module from "../styles/Signup.module.css";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Signup = () => {
   return (
     <>
       <h1>회원가입 페이지</h1>
-      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+      <div className={module["form-module"]}>
         <label htmlFor="email-input">이메일</label>
         <input
           id="email-input"
