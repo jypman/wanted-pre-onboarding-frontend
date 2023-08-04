@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestSignup } from "../api/auth";
 import { isValidEmail, isValidPwd } from "../utils/auth";
@@ -9,7 +9,7 @@ const Signup = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleSignUp = async (): Promise<void> => {
+  const handleSignUp = useCallback(async (): Promise<void> => {
     try {
       await requestSignup({ email, password });
       navigate("/signin");
@@ -17,15 +17,21 @@ const Signup = () => {
       console.error(e);
       alert("다시 시도해주시기 바랍니다.");
     }
-  };
+  }, []);
 
-  const handleEmailVal = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setEmail(event.target.value);
-  };
+  const handleEmailVal = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      setEmail(event.target.value);
+    },
+    [],
+  );
 
-  const handlePwdVal = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setPassword(event.target.value);
-  };
+  const handlePwdVal = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      setPassword(event.target.value);
+    },
+    [],
+  );
 
   return (
     <>

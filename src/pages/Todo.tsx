@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   IResTodo,
   requestToCreateTodo,
@@ -39,11 +39,14 @@ const Todo = () => {
     getTodo();
   }, []);
 
-  const typeNewTodoVal = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    newTodoVal.current = e.target.value;
-  };
+  const typeNewTodoVal = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>): void => {
+      newTodoVal.current = e.target.value;
+    },
+    [],
+  );
 
-  const addTodo = async (): Promise<void> => {
+  const addTodo = useCallback(async (): Promise<void> => {
     try {
       if (newTodoVal.current.length > 0) {
         const data = await requestToCreateTodo({
@@ -57,51 +60,54 @@ const Todo = () => {
     } catch (e) {
       console.error(e);
     }
-  };
+  }, []);
 
-  const typeTempTodo = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    curTodoIndex: number,
-  ): void => {
-    setTodos((prevState: IRenderTodo[]) =>
-      prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
-        curTodoIndex === newTodoIndex
-          ? { ...curTodo, tempTodoVal: e.target.value }
-          : curTodo,
-      ),
-    );
-  };
-
-  const updateTodoVal = async (
-    todoItem: IRenderTodo,
-    curTodoIndex: number,
-    isCompleted?: boolean,
-  ): Promise<void> => {
-    try {
-      const updateData = await requestToUpdateTodo({
-        todo: todoItem.tempTodoVal ?? todoItem.todo,
-        isCompleted: isCompleted ?? todoItem.isCompleted,
-        id: todoItem.id,
-      });
+  const typeTempTodo = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, curTodoIndex: number): void => {
       setTodos((prevState: IRenderTodo[]) =>
         prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
           curTodoIndex === newTodoIndex
-            ? {
-                ...curTodo,
-                todo: updateData.todo,
-                isCompleted: updateData.isCompleted,
-                isModifyMode: false,
-                tempTodoVal: undefined,
-              }
+            ? { ...curTodo, tempTodoVal: e.target.value }
             : curTodo,
         ),
       );
-    } catch (e) {
-      console.error(e);
-    }
-  };
+    },
+    [],
+  );
 
-  const cancelModifiedMode = (curTodoIndex: number): void => {
+  const updateTodoVal = useCallback(
+    async (
+      todoItem: IRenderTodo,
+      curTodoIndex: number,
+      isCompleted?: boolean,
+    ): Promise<void> => {
+      try {
+        const updateData = await requestToUpdateTodo({
+          todo: todoItem.tempTodoVal ?? todoItem.todo,
+          isCompleted: isCompleted ?? todoItem.isCompleted,
+          id: todoItem.id,
+        });
+        setTodos((prevState: IRenderTodo[]) =>
+          prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
+            curTodoIndex === newTodoIndex
+              ? {
+                  ...curTodo,
+                  todo: updateData.todo,
+                  isCompleted: updateData.isCompleted,
+                  isModifyMode: false,
+                  tempTodoVal: undefined,
+                }
+              : curTodo,
+          ),
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [],
+  );
+
+  const cancelModifiedMode = useCallback((curTodoIndex: number): void => {
     setTodos((prevState: IRenderTodo[]) =>
       prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
         curTodoIndex === newTodoIndex
@@ -109,9 +115,9 @@ const Todo = () => {
           : curTodo,
       ),
     );
-  };
+  }, []);
 
-  const turnModifiedMode = (curTodoIndex: number): void => {
+  const turnModifiedMode = useCallback((curTodoIndex: number): void => {
     setTodos((prevState: IRenderTodo[]) =>
       prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
         curTodoIndex === newTodoIndex
@@ -119,9 +125,9 @@ const Todo = () => {
           : curTodo,
       ),
     );
-  };
+  }, []);
 
-  const deleteTodo = async (todoItemId: number): Promise<void> => {
+  const deleteTodo = useCallback(async (todoItemId: number): Promise<void> => {
     try {
       await requestToDeleteTodo(todoItemId);
       setTodos((prevState: IRenderTodo[]) =>
@@ -130,7 +136,7 @@ const Todo = () => {
     } catch (e) {
       console.error(e);
     }
-  };
+  }, []);
 
   return (
     <>
