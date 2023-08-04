@@ -75,6 +75,8 @@ const Todo = () => {
     [],
   );
 
+  // 체크박스를 통해 todo를 업데이할 경우 isCompleted의 자료형은 boolean
+  // 제출 버튼을 통해 todo를 업데이트할 경우 해당 함수 호출 시 isCompleted에 값을 할당하지 않기에 자료형은 undefined
   const updateTodoVal = useCallback(
     async (
       todoItem: IRenderTodo,
@@ -83,7 +85,13 @@ const Todo = () => {
     ): Promise<void> => {
       try {
         const updateData = await requestToUpdateTodo({
-          todo: todoItem.tempTodoVal ?? todoItem.todo,
+          todo:
+            // 체크박스를 클릭하여 todo를 업데이트할 경우 기존 todo 값 사용
+            // 그렇지 않으면 새로 작성한 todo의 값
+            // 새로 작성한 todo 없이 바로 제출을 누르면 기존 todo 값 사용
+            typeof isCompleted === "boolean"
+              ? todoItem.todo
+              : todoItem.tempTodoVal ?? todoItem.todo,
           isCompleted: isCompleted ?? todoItem.isCompleted,
           id: todoItem.id,
         });
@@ -94,8 +102,17 @@ const Todo = () => {
                   ...curTodo,
                   todo: updateData.todo,
                   isCompleted: updateData.isCompleted,
-                  isModifyMode: false,
-                  tempTodoVal: undefined,
+
+                  // 체크박스를 클릭한 경우 수정모드는 그대로 유지
+                  // 제출버튼을 누른 경우 수정모드 비활성화
+                  isModifyMode: typeof isCompleted === "boolean",
+
+                  // 체크박스를 클릭한 경우 새로 작성 중인 todo 값은 유지
+                  // 제출버튼을 누른 경우 새로 작성했던 todo 내용은 초기화
+                  tempTodoVal:
+                    typeof isCompleted === "boolean"
+                      ? curTodo.tempTodoVal
+                      : undefined,
                 }
               : curTodo,
           ),

@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import Todo from "../pages/Todo";
 import * as remotes from "../api/todo";
 import { mockConsoleError, sleep } from "./utils";
+import exp from "constants";
 
 describe("todo list 페이지 테스트", () => {
   mockConsoleError();
@@ -78,6 +79,28 @@ describe("todo list 페이지 테스트", () => {
   test("todo 수정 버튼을 누르면 수정모드로 바뀐다.", async () => {
     userEvent.click(await screen.findByTestId("modify-button"));
 
+    expect(await screen.findByTestId("modify-input")).toBeInTheDocument();
+    expect(await screen.findByTestId("submit-button")).toBeInTheDocument();
+    expect(await screen.findByTestId("cancel-button")).toBeInTheDocument();
+  });
+
+  test("todo 수정 모드에서 완료 체크박스 클릭 시 수정모드는 그대로 유지한다.", async () => {
+    const spyOnUpdate = jest.spyOn(remotes, "requestToUpdateTodo");
+    spyOnUpdate.mockImplementation(
+      async (): Promise<remotes.IResTodo> => ({
+        id: 1,
+        todo: "리액트 hook 배우기",
+        isCompleted: true,
+        userId: 12,
+      }),
+    );
+    userEvent.click(await screen.findByTestId("modify-button"));
+    userEvent.click(await screen.findByTestId("todo-checkbox"));
+
+    await sleep(200);
+
+    expect(await screen.findByTestId("todo-checkbox")).toBeInTheDocument();
+    expect(await screen.findByTestId("todo-checkbox")).toBeChecked();
     expect(await screen.findByTestId("modify-input")).toBeInTheDocument();
     expect(await screen.findByTestId("submit-button")).toBeInTheDocument();
     expect(await screen.findByTestId("cancel-button")).toBeInTheDocument();
