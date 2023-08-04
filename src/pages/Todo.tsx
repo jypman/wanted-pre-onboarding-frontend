@@ -173,6 +173,7 @@ const Todo = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         typeTempTodo(e, curTodoIndex)
                       }
+                      data-testid="modify-input"
                     />
                     <label htmlFor={todoItem.id.toString()} />
                     <button
