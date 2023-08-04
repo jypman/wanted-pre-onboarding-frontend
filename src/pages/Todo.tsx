@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   IResTodo,
   requestToCreateTodo,
@@ -39,11 +39,14 @@ const Todo = () => {
     getTodo();
   }, []);
 
-  const typeNewTodoVal = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    newTodoVal.current = e.target.value;
-  };
+  const typeNewTodoVal = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>): void => {
+      newTodoVal.current = e.target.value;
+    },
+    [],
+  );
 
-  const addTodo = async (): Promise<void> => {
+  const addTodo = useCallback(async (): Promise<void> => {
     try {
       if (newTodoVal.current.length > 0) {
         const data = await requestToCreateTodo({
@@ -57,51 +60,71 @@ const Todo = () => {
     } catch (e) {
       console.error(e);
     }
-  };
+  }, []);
 
-  const typeTempTodo = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    curTodoIndex: number,
-  ): void => {
-    setTodos((prevState: IRenderTodo[]) =>
-      prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
-        curTodoIndex === newTodoIndex
-          ? { ...curTodo, tempTodoVal: e.target.value }
-          : curTodo,
-      ),
-    );
-  };
-
-  const updateTodoVal = async (
-    todoItem: IRenderTodo,
-    curTodoIndex: number,
-    isCompleted?: boolean,
-  ): Promise<void> => {
-    try {
-      const updateData = await requestToUpdateTodo({
-        todo: todoItem.tempTodoVal ?? todoItem.todo,
-        isCompleted: isCompleted ?? todoItem.isCompleted,
-        id: todoItem.id,
-      });
+  const typeTempTodo = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, curTodoIndex: number): void => {
       setTodos((prevState: IRenderTodo[]) =>
         prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
           curTodoIndex === newTodoIndex
-            ? {
-                ...curTodo,
-                todo: updateData.todo,
-                isCompleted: updateData.isCompleted,
-                isModifyMode: false,
-                tempTodoVal: undefined,
-              }
+            ? { ...curTodo, tempTodoVal: e.target.value }
             : curTodo,
         ),
       );
-    } catch (e) {
-      console.error(e);
-    }
-  };
+    },
+    [],
+  );
 
-  const cancelModifiedMode = (curTodoIndex: number): void => {
+  // 체크박스를 통해 todo를 업데이할 경우 isCompleted의 자료형은 boolean
+  // 제출 버튼을 통해 todo를 업데이트할 경우 해당 함수 호출 시 isCompleted에 값을 할당하지 않기에 자료형은 undefined
+  const updateTodoVal = useCallback(
+    async (
+      todoItem: IRenderTodo,
+      curTodoIndex: number,
+      isCompleted?: boolean,
+    ): Promise<void> => {
+      try {
+        const updateData = await requestToUpdateTodo({
+          todo:
+            // 체크박스를 클릭하여 todo를 업데이트할 경우 기존 todo 값 사용
+            // 그렇지 않으면 새로 작성한 todo의 값
+            // 새로 작성한 todo 없이 바로 제출을 누르면 기존 todo 값 사용
+            typeof isCompleted === "boolean"
+              ? todoItem.todo
+              : todoItem.tempTodoVal ?? todoItem.todo,
+          isCompleted: isCompleted ?? todoItem.isCompleted,
+          id: todoItem.id,
+        });
+        setTodos((prevState: IRenderTodo[]) =>
+          prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
+            curTodoIndex === newTodoIndex
+              ? {
+                  ...curTodo,
+                  todo: updateData.todo,
+                  isCompleted: updateData.isCompleted,
+
+                  // 체크박스를 클릭한 경우 수정모드는 그대로 유지
+                  // 제출버튼을 누른 경우 수정모드 비활성화
+                  isModifyMode: typeof isCompleted === "boolean",
+
+                  // 체크박스를 클릭한 경우 새로 작성 중인 todo 값은 유지
+                  // 제출버튼을 누른 경우 새로 작성했던 todo 내용은 초기화
+                  tempTodoVal:
+                    typeof isCompleted === "boolean"
+                      ? curTodo.tempTodoVal
+                      : undefined,
+                }
+              : curTodo,
+          ),
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [],
+  );
+
+  const cancelModifiedMode = useCallback((curTodoIndex: number): void => {
     setTodos((prevState: IRenderTodo[]) =>
       prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
         curTodoIndex === newTodoIndex
@@ -109,9 +132,9 @@ const Todo = () => {
           : curTodo,
       ),
     );
-  };
+  }, []);
 
-  const turnModifiedMode = (curTodoIndex: number): void => {
+  const turnModifiedMode = useCallback((curTodoIndex: number): void => {
     setTodos((prevState: IRenderTodo[]) =>
       prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
         curTodoIndex === newTodoIndex
@@ -119,9 +142,9 @@ const Todo = () => {
           : curTodo,
       ),
     );
-  };
+  }, []);
 
-  const deleteTodo = async (todoItemId: number): Promise<void> => {
+  const deleteTodo = useCallback(async (todoItemId: number): Promise<void> => {
     try {
       await requestToDeleteTodo(todoItemId);
       setTodos((prevState: IRenderTodo[]) =>
@@ -130,7 +153,7 @@ const Todo = () => {
     } catch (e) {
       console.error(e);
     }
-  };
+  }, []);
 
   return (
     <>
