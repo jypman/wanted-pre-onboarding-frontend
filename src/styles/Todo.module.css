@@ -1,0 +1,13 @@
+.new-input-module {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.cur-todo-list-module {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    &:not(:last-child) {
+        margin-bottom: 5px;
+    }
+}

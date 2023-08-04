@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestSignin } from "../api/auth";
 import { isValidEmail, isValidPwd } from "../utils/auth";
+import module from "../styles/Signin.module.css";
 
 const Signin = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const Signin = () => {
   return (
     <>
       <h1>로그인 페이지</h1>
-      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+      <div className={module["form-module"]}>
         <label htmlFor="email-input">이메일</label>
         <input
           id="email-input"

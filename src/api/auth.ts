@@ -28,7 +28,7 @@ interface IReqSignin {
   email: string;
   password: string;
 }
-interface IResSignin {
+export interface IResSignin {
   access_token: string;
 }
 export const requestSignin = async ({

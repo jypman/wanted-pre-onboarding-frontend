@@ -6,6 +6,7 @@ import {
   requestToGetTodo,
   requestToUpdateTodo,
 } from "../api/todo";
+import module from "../styles/Todo.module.css";
 
 interface IRenderTodo extends IResTodo {
   /** 수정모드 on/off */
@@ -14,7 +15,7 @@ interface IRenderTodo extends IResTodo {
    * 특정 todo의 내용을 수정하다가 취소를 클릭한 경우 서버 응답했던 todo 값으로 되돌려준다.
    * 만약 todo의 내용을 수정하고 제출을 누르면 tempTodoVal의 값을 서버에 요청한다.
    * */
-  tempTodoVal: string;
+  tempTodoVal?: string;
 }
 
 const Todo = () => {
@@ -29,7 +30,6 @@ const Todo = () => {
           data.map((item) => ({
             ...item,
             isModifyMode: false,
-            tempTodoVal: "",
           })),
         );
       } catch (e) {
@@ -51,7 +51,7 @@ const Todo = () => {
         });
         setTodos((prevState: IRenderTodo[]) => [
           ...prevState,
-          { ...data, isModifyMode: false, tempTodoVal: "" },
+          { ...data, isModifyMode: false },
         ]);
       }
     } catch (e) {
@@ -79,7 +79,7 @@ const Todo = () => {
   ): Promise<void> => {
     try {
       const updateData = await requestToUpdateTodo({
-        todo: todoItem.tempTodoVal,
+        todo: todoItem.tempTodoVal ?? todoItem.todo,
         isCompleted: isCompleted ?? todoItem.isCompleted,
         id: todoItem.id,
       });
@@ -91,6 +91,7 @@ const Todo = () => {
                 todo: updateData.todo,
                 isCompleted: updateData.isCompleted,
                 isModifyMode: false,
+                tempTodoVal: undefined,
               }
             : curTodo,
         ),
@@ -104,7 +105,7 @@ const Todo = () => {
     setTodos((prevState: IRenderTodo[]) =>
       prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
         curTodoIndex === newTodoIndex
-          ? { ...curTodo, isModifyMode: false }
+          ? { ...curTodo, isModifyMode: false, tempTodoVal: undefined }
           : curTodo,
       ),
     );
@@ -134,7 +135,7 @@ const Todo = () => {
   return (
     <>
       <h1>todo list 페이지</h1>
-      <div style={{ display: "flex", gap: "10px" }}>
+      <div className={module["new-input-module"]}>
         <label htmlFor="new-todo-input">new todo :</label>
         <input
           id="new-todo-input"
@@ -152,7 +153,7 @@ const Todo = () => {
               <li
                 data-testid="todo-li"
                 key={todoItem.id}
-                style={{ display: "flex", gap: "5px", alignItems: "center" }}
+                className={module["cur-todo-list-module"]}
               >
                 <input
                   id={todoItem.id.toString()}
@@ -172,6 +173,7 @@ const Todo = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         typeTempTodo(e, curTodoIndex)
                       }
+                      data-testid="modify-input"
                     />
                     <label htmlFor={todoItem.id.toString()} />
                     <button

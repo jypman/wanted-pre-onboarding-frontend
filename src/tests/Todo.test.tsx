@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Todo from "../pages/Todo";
 import * as remotes from "../api/todo";
-import userEvent from "@testing-library/user-event";
 import { mockConsoleError, sleep } from "./utils";
 
 describe("todo list 페이지 테스트", () => {
@@ -78,9 +78,7 @@ describe("todo list 페이지 테스트", () => {
   test("todo 수정 버튼을 누르면 수정모드로 바뀐다.", async () => {
     userEvent.click(await screen.findByTestId("modify-button"));
 
-    expect(
-      await screen.findByDisplayValue<HTMLInputElement>(/리액트 hook 배우기/),
-    ).toBeInTheDocument();
+    expect(await screen.findByTestId("modify-input")).toBeInTheDocument();
     expect(await screen.findByTestId("submit-button")).toBeInTheDocument();
     expect(await screen.findByTestId("cancel-button")).toBeInTheDocument();
   });
@@ -98,10 +96,7 @@ describe("todo list 페이지 테스트", () => {
     );
 
     userEvent.click(await screen.findByTestId("modify-button"));
-    userEvent.type(
-      await screen.findByDisplayValue<HTMLInputElement>(/리액트 hook 배우기/),
-      newTodo,
-    );
+    userEvent.type(await screen.findByTestId("modify-input"), newTodo);
 
     expect(
       await screen.findByDisplayValue<HTMLInputElement>(
@@ -125,7 +120,9 @@ describe("todo list 페이지 테스트", () => {
     userEvent.click(await screen.findByTestId("modify-button"));
     userEvent.click(await screen.findByTestId("cancel-button"));
 
-    expect(await screen.findByText(/리액트 hook 배우기/)).toBeInTheDocument();
+    expect(
+      await screen.findByText<HTMLSpanElement>(/리액트 hook 배우기/),
+    ).toBeInTheDocument();
     expect(await screen.findByTestId("modify-button")).toBeInTheDocument();
     expect(await screen.findByTestId("delete-button")).toBeInTheDocument();
   });
