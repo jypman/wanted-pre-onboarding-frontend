@@ -15,7 +15,7 @@ interface IRenderTodo extends IResTodo {
    * 특정 todo의 내용을 수정하다가 취소를 클릭한 경우 서버 응답했던 todo 값으로 되돌려준다.
    * 만약 todo의 내용을 수정하고 제출을 누르면 tempTodoVal의 값을 서버에 요청한다.
    * */
-  tempTodoVal: string;
+  tempTodoVal?: string;
 }
 
 const Todo = () => {
@@ -30,7 +30,6 @@ const Todo = () => {
           data.map((item) => ({
             ...item,
             isModifyMode: false,
-            tempTodoVal: "",
           })),
         );
       } catch (e) {
@@ -52,7 +51,7 @@ const Todo = () => {
         });
         setTodos((prevState: IRenderTodo[]) => [
           ...prevState,
-          { ...data, isModifyMode: false, tempTodoVal: "" },
+          { ...data, isModifyMode: false },
         ]);
       }
     } catch (e) {
@@ -80,7 +79,7 @@ const Todo = () => {
   ): Promise<void> => {
     try {
       const updateData = await requestToUpdateTodo({
-        todo: todoItem.tempTodoVal,
+        todo: todoItem.tempTodoVal ?? todoItem.todo,
         isCompleted: isCompleted ?? todoItem.isCompleted,
         id: todoItem.id,
       });
@@ -92,6 +91,7 @@ const Todo = () => {
                 todo: updateData.todo,
                 isCompleted: updateData.isCompleted,
                 isModifyMode: false,
+                tempTodoVal: undefined,
               }
             : curTodo,
         ),
@@ -105,7 +105,7 @@ const Todo = () => {
     setTodos((prevState: IRenderTodo[]) =>
       prevState.map((curTodo: IRenderTodo, newTodoIndex) =>
         curTodoIndex === newTodoIndex
-          ? { ...curTodo, isModifyMode: false }
+          ? { ...curTodo, isModifyMode: false, tempTodoVal: undefined }
           : curTodo,
       ),
     );
