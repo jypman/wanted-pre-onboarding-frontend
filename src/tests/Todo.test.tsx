@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Todo from "../pages/Todo";
 import * as remotes from "../api/todo";
-import userEvent from "@testing-library/user-event";
 import { mockConsoleError, sleep } from "./utils";
 
 describe("todo list 페이지 테스트", () => {
