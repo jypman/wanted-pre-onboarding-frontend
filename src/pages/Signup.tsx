@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { requestSignup } from "../api/auth";
 import { AuthForm } from "../components/AuthForm";
+import { handleError } from "../api/http";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -13,10 +14,8 @@ const Signup = () => {
     try {
       await requestSignup({ email, password });
       navigate("/signin");
-    } catch (e: any) {
-      if (e.response.data.statusCode === 400) {
-        alert(e.response.data.message);
-      }
+    } catch (err) {
+      handleError(err);
     }
   };
 
