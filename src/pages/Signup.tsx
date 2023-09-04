@@ -10,8 +10,14 @@ const Signup = () => {
     email: string,
     password: string,
   ): Promise<void> => {
-    await requestSignup({ email, password });
-    navigate("/signin");
+    try {
+      await requestSignup({ email, password });
+      navigate("/signin");
+    } catch (e: any) {
+      if (e.response.data.statusCode === 400) {
+        alert(e.response.data.message);
+      }
+    }
   };
 
   return (
