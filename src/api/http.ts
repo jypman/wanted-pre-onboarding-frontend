@@ -2,17 +2,18 @@ import axios from "axios";
 import { BASE_URL } from "./constants";
 import { ACCESS_TOKEN_KEY } from "../utils/auth";
 
+const accessToken = window.localStorage.getItem(ACCESS_TOKEN_KEY);
+
 const http = axios.create({
   timeout: 5000,
   baseURL: BASE_URL,
+  headers: {
+    Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+  },
 });
 
 http.interceptors.response.use(
   (res) => {
-    const accessToken = window.localStorage.getItem(ACCESS_TOKEN_KEY);
-    if (accessToken) {
-      res.headers["Authorization"] = `Bearer ${accessToken}`;
-    }
     return res.data;
   },
   (err) => {
