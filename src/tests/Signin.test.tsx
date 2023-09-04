@@ -5,7 +5,6 @@ import Signin from "../pages/Signin";
 import { MIN_PWD_LENGTH } from "../utils/auth";
 import { mockConsoleError, sleep } from "./utils";
 import * as auth from "../api/auth";
-import Auth from "../pages/Auth";
 
 const mockedUsedNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
@@ -122,9 +121,7 @@ describe("로그인 페이지 테스트", () => {
 
     render(
       <BrowserRouter>
-        <Auth>
-          <Signin />
-        </Auth>
+        <Signin />
       </BrowserRouter>,
     );
 
