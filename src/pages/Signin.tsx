@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestSignin } from "../api/auth";
 import { isValidEmail, isValidPwd } from "../utils/auth";
@@ -9,7 +9,7 @@ const Signin = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleSignin = useCallback(async (): Promise<void> => {
+  const handleSignin = async (): Promise<void> => {
     try {
       const data = await requestSignin({ email, password });
       window.localStorage.setItem("accessToken", data.access_token);
@@ -18,21 +18,15 @@ const Signin = () => {
       console.error(e);
       alert("다시 시도해주시기 바랍니다.");
     }
-  }, []);
+  };
 
-  const handleEmailVal = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>): void => {
-      setEmail(event.target.value);
-    },
-    [],
-  );
+  const handleEmailVal = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setEmail(event.target.value);
+  };
 
-  const handlePwdVal = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>): void => {
-      setPassword(event.target.value);
-    },
-    [],
-  );
+  const handlePwdVal = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setPassword(event.target.value);
+  };
 
   return (
     <>
