@@ -6,7 +6,7 @@ interface TodoItemProps {
   todo: IRenderTodo;
 }
 
-export const TodoItem = ({ todo }: TodoItemProps) => {
+export const TodoItem = React.memo(({ todo }: TodoItemProps) => {
   const todoActions = useTodoAction();
 
   return (
@@ -72,4 +72,4 @@ export const TodoItem = ({ todo }: TodoItemProps) => {
       )}
     </section>
   );
-};
+});
