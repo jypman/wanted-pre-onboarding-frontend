@@ -1,9 +1,31 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, redirect } from "react-router-dom";
+import { ACCESS_TOKEN_KEY } from "../utils/auth";
 import Home from "./Home";
 import Signup from "./Signup";
 import Signin from "./Signin";
-import Todo from "./Todo";
-import Auth from "./Auth";
+import Todo from "./Todo/Todo";
+import { TodoProvider } from "../providers/TodoProvider";
+
+export const redirectDependingOnLogin = async ({
+  request,
+}: {
+  request: Request;
+}) => {
+  const pathName = new URL(request.url).pathname;
+  switch (pathName) {
+    case "/signin":
+    case "/signup":
+      return window.localStorage.getItem(ACCESS_TOKEN_KEY)
+        ? redirect("/todo")
+        : null;
+    case "/todo":
+      return window.localStorage.getItem(ACCESS_TOKEN_KEY)
+        ? null
+        : redirect("/signin");
+    default:
+      return null;
+  }
+};
 
 export const router = createBrowserRouter([
   {
@@ -12,26 +34,21 @@ export const router = createBrowserRouter([
   },
   {
     path: "/signup",
-    element: (
-      <Auth>
-        <Signup />
-      </Auth>
-    ),
+    loader: redirectDependingOnLogin,
+    element: <Signup />,
   },
   {
     path: "/signin",
-    element: (
-      <Auth>
-        <Signin />
-      </Auth>
-    ),
+    loader: redirectDependingOnLogin,
+    element: <Signin />,
   },
   {
     path: "/todo",
+    loader: redirectDependingOnLogin,
     element: (
-      <Auth>
+      <TodoProvider>
         <Todo />
-      </Auth>
+      </TodoProvider>
     ),
   },
 ]);
