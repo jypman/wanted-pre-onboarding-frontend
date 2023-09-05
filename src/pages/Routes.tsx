@@ -4,6 +4,7 @@ import Home from "./Home";
 import Signup from "./Signup";
 import Signin from "./Signin";
 import Todo from "./Todo/Todo";
+import { TodoProvider } from "../providers/TodoProvider";
 
 export const redirectDependingOnLogin = async ({
   request,
@@ -44,6 +45,10 @@ export const router = createBrowserRouter([
   {
     path: "/todo",
     loader: redirectDependingOnLogin,
-    element: <Todo />,
+    element: (
+      <TodoProvider>
+        <Todo />
+      </TodoProvider>
+    ),
   },
 ]);

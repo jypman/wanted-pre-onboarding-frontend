@@ -1,15 +1,13 @@
-import React, { Dispatch, useRef, useState } from "react";
+import React, { useState } from "react";
 import module from "../../styles/Todo.module.css";
 import { requestToCreateTodo } from "../../api/todo";
 import { IRenderTodo } from "../../types/todo";
 import { handleError } from "../../api/http";
+import { useTodoAction } from "../../providers/TodoProvider";
 
-interface AddTodoFormProps {
-  setTodos: Dispatch<React.SetStateAction<IRenderTodo[]>>;
-}
-
-export const AddTodoForm = ({ setTodos }: AddTodoFormProps) => {
+export const AddTodoForm = () => {
   const [newTodoVal, setNewTodoVal] = useState<string>("");
+  const setTodos = useTodoAction();
 
   const typeNewTodoVal = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setNewTodoVal(e.target.value);

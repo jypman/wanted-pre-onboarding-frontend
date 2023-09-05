@@ -1,14 +1,15 @@
-import React, { Dispatch } from "react";
+import React from "react";
 import { IRenderTodo } from "../../types/todo";
 import { requestToDeleteTodo, requestToUpdateTodo } from "../../api/todo";
 import { handleError } from "../../api/http";
+import { useTodoAction } from "../../providers/TodoProvider";
 
 interface TodoItemProps {
   todo: IRenderTodo;
-  setTodos: Dispatch<React.SetStateAction<IRenderTodo[]>>;
 }
 
-export const TodoItem = ({ todo, setTodos }: TodoItemProps) => {
+export const TodoItem = ({ todo }: TodoItemProps) => {
+  const setTodos = useTodoAction();
   const typeTempTodoVal = (
     e: React.ChangeEvent<HTMLInputElement>,
     todoId: number,
