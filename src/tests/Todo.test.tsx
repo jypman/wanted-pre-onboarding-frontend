@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Todo from "../pages/Todo";
+import Todo from "../pages/Todo/Todo";
 import * as remotes from "../api/todo";
 import { mockConsoleError, sleep } from "./utils";
 import exp from "constants";

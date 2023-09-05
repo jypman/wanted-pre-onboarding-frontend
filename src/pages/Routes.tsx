@@ -3,7 +3,7 @@ import { ACCESS_TOKEN_KEY } from "../utils/auth";
 import Home from "./Home";
 import Signup from "./Signup";
 import Signin from "./Signin";
-import Todo from "./Todo";
+import Todo from "./Todo/Todo";
 
 export const redirectDependingOnLogin = async ({
   request,

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { requestToGetTodo } from "../api/todo";
-import { IRenderTodo } from "../types/todo";
-import { AddTodoForm } from "./Todo/AddTodoForm";
-import { TodoList } from "./Todo/TodoList";
+import { requestToGetTodo } from "../../api/todo";
+import { IRenderTodo } from "../../types/todo";
+import { AddTodoForm } from "./AddTodoForm";
+import { TodoList } from "./TodoList";
+import { handleError } from "../../api/http";
 
 const Todo = () => {
   const [todos, setTodos] = useState<IRenderTodo[]>([]);
@@ -18,7 +19,7 @@ const Todo = () => {
           })),
         );
       } catch (e) {
-        console.error(e);
+        handleError(e);
       }
     };
     getTodo();
