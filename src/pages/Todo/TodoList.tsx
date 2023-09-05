@@ -3,28 +3,13 @@ import { IRenderTodo } from "../../types/todo";
 import module from "../../styles/Todo.module.css";
 import { TodoItem } from "./TodoItem";
 import { useTodoAction, useTodoVal } from "../../providers/TodoProvider";
-import { requestToGetTodo } from "../../api/todo";
-import { handleError } from "../../api/http";
 
 export const TodoList = () => {
   const todos = useTodoVal();
-  const setTodos = useTodoAction();
+  const todoActions = useTodoAction();
 
   useEffect(() => {
-    const getTodo = async () => {
-      try {
-        const data = await requestToGetTodo();
-        setTodos(
-          data.map((item) => ({
-            ...item,
-            isModifyMode: false,
-          })),
-        );
-      } catch (e) {
-        handleError(e);
-      }
-    };
-    getTodo();
+    todoActions.getTodo();
   }, []);
 
   return (
