@@ -10,13 +10,13 @@ export interface IResTodo {
   isCompleted: boolean;
   userId: number;
 }
-export const requestToCreateTodo = async ({
+export const requestToCreateTodo = ({
   todo,
 }: IReqCreateTodo): Promise<IResTodo> => {
   return http.post(API.TODOS, { todo });
 };
 
-export const requestToGetTodo = async (): Promise<IResTodo[]> => {
+export const requestToGetTodo = (): Promise<IResTodo[]> => {
   return http.get(API.TODOS);
 };
 
@@ -25,7 +25,7 @@ interface IReqUpdateTodo {
   isCompleted: boolean;
   id: number;
 }
-export const requestToUpdateTodo = async ({
+export const requestToUpdateTodo = ({
   todo,
   isCompleted,
   id,
@@ -33,6 +33,6 @@ export const requestToUpdateTodo = async ({
   return http.put(`${API.TODOS}/${id}`, { todo, isCompleted });
 };
 
-export const requestToDeleteTodo = async (id: number): Promise<void> => {
+export const requestToDeleteTodo = (id: number): Promise<void> => {
   return http.delete(`${API.TODOS}/${id}`);
 };

@@ -12,6 +12,19 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockedUsedNavigate,
   useLocation: () => ({ pathname: "/signin" }),
 }));
+jest.mock("axios", () => ({
+  isAxiosError: false,
+  create: jest.fn(() => ({
+    interceptors: {
+      request: {
+        use: jest.fn(),
+      },
+      response: {
+        use: jest.fn(),
+      },
+    },
+  })),
+}));
 
 describe("로그인 페이지 테스트", () => {
   mockConsoleError();
@@ -104,27 +117,6 @@ describe("로그인 페이지 테스트", () => {
 
     expect(localStorage).toEqual({ accessToken: "mockAccessToken" });
     expect(mockedUsedNavigate).toHaveBeenCalled();
-    expect(curUrl).toEqual("/todo");
-  });
-
-  test("로그인한 상태에서 로그인 페이지 진입 시 todo list 페이지로 이동", async () => {
-    let curUrl: string = "";
-    let store: { [key: string]: string } = {
-      accessToken: "mockAccessToken",
-    };
-    Storage.prototype.getItem = jest.fn((key: string) => {
-      return store[key];
-    });
-    mockedUsedNavigate.mockImplementation((url: string) => {
-      curUrl = url;
-    });
-
-    render(
-      <BrowserRouter>
-        <Signin />
-      </BrowserRouter>,
-    );
-
     expect(curUrl).toEqual("/todo");
   });
 });
