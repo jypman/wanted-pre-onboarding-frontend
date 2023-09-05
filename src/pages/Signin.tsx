@@ -16,7 +16,7 @@ const Signin = () => {
       const data = await requestSignin({ email, password });
       window.localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
       navigate("/todo");
-    } catch (err: any) {
+    } catch (err) {
       handleError(err);
     }
   };
